@@ -276,9 +276,9 @@ static void on_ssh_client_event(struct tmate_ssh_client *client)
 		ssh_options_set(session, SSH_OPTIONS_PORT, &port);
 		char* tmate_user = options_get_string(global_options,
 						"tmate-user");
-		size_t tmate_userlen = strlen(tmate_user);
+		size_t tmate_user_len = strlen(tmate_user);
 
-		if (tmate_user > MAX_ACCOUNT_LEN)
+		if (tmate_user_len > MAX_ACCOUNT_LEN)
 		{
 			tmate_fatal("Invalid tmate-user");
 		}
