@@ -30,7 +30,6 @@ RUN ./tmate -V
 
 FROM alpine:3.9
 
-RUN apk --no-cache add bash
 RUN mkdir /build
 ENV PATH=/build:$PATH
 COPY --from=build /build/tmate.symbols /build
