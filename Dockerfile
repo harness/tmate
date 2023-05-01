@@ -1,6 +1,11 @@
 ARG PLATFORM=amd64
 FROM ${PLATFORM}/alpine:3.10 AS build
 
+RUN mkdir /build
+ENV PATH=/build:$PATH
+COPY --from=build /build/tmate.symbols /build
+COPY --from=build /build/tmate /build
+
 WORKDIR /build
 
 RUN apk add --no-cache wget cmake make gcc g++ linux-headers zlib-dev openssl-dev \
@@ -28,9 +33,6 @@ RUN make -j $(nproc)
 RUN objcopy --only-keep-debug tmate tmate.symbols && chmod -x tmate.symbols && strip tmate
 RUN ./tmate -V
 
-FROM alpine:3.9
 
-RUN mkdir /build
-ENV PATH=/build:$PATH
-COPY --from=build /build/tmate.symbols /build
-COPY --from=build /build/tmate /build
+
+
