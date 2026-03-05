@@ -1,7 +1,7 @@
 # ---------------------------------------------------------#
 #                   Build Tmate Binary                     #
 # ---------------------------------------------------------#
-FROM debian:bookworm-slim AS builder
+FROM debian:trixie-slim AS builder
 
 WORKDIR /build
 
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     zlib1g-dev libssl-dev \
     automake autoconf libtool \
-    libevent-dev libncurses-dev libmsgpack-dev \
+    libevent-dev libncurses-dev libmsgpack-c-dev \
     git \
     && rm -rf /var/lib/apt/lists/*
 
@@ -55,7 +55,7 @@ RUN ./tmate -V
 # ---------------------------------------------------------#
 #                   Create final image                     #
 # ---------------------------------------------------------#
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 WORKDIR /binaries
 
@@ -63,12 +63,15 @@ WORKDIR /binaries
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libevent-2.1-7 \
     libncurses6 \
-    libmsgpackc2 \
+    libmsgpack-c2 \
     libssh-4 \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the binary
 COPY --from=builder /build/tmate /binaries/tmate
+
+# Run as non-root user (nobody:nobody is typically uid:gid 65534:65534)
+USER 65534:65534
 
 # Build metadata labels
 ARG BUILD_VERSION
