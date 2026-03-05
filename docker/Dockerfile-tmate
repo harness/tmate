@@ -70,6 +70,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy the binary
 COPY --from=builder /build/tmate /binaries/tmate
 
+# Run as non-root user (nobody:nobody is typically uid:gid 65534:65534)
+USER 65534:65534
+
 # Build metadata labels
 ARG BUILD_VERSION
 ARG BUILD_TIME
